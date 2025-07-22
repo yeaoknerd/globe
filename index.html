@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Spinning Globe</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.min.js"></script>
+  <script>
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    let controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = true;
+
+    let ambientLight = new THREE.AmbientLight(0xcccccc, 0.5);
+    scene.add(ambientLight);
+    let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 3, 5);
+    scene.add(directionalLight);
+
+    let starGeometry = new THREE.SphereGeometry(90, 64, 64);
+    let starMaterial = new THREE.MeshBasicMaterial({
+      map: new THREE.TextureLoader().load('https://threejsfundamentals.org/threejs/resources/images/starfield.jpg'),
+      side: THREE.BackSide
+    });
+    let starField = new THREE.Mesh(starGeometry, starMaterial);
+    scene.add(starField);
+
+    let earthGeometry = new THREE.SphereGeometry(1, 64, 64);
+    let textureLoader = new THREE.TextureLoader();
+    textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/earth-day.jpg', function(texture) {
+      let earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
+      let earth = new THREE.Mesh(earthGeometry, earthMaterial);
+      scene.add(earth);
+
+      camera.position.z = 3;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        earth.rotation.y += 0.0015;
+        renderer.render(scene, camera);
+      }
+      animate();
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
