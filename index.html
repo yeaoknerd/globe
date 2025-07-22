@@ -10,48 +10,47 @@
   </style>
 </head>
 <body>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.min.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
   <script>
-    let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    let renderer = new THREE.WebGLRenderer();
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    let controls = new THREE.OrbitControls(camera, renderer.domElement);
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableZoom = true;
 
-    let ambientLight = new THREE.AmbientLight(0xcccccc, 0.5);
-    scene.add(ambientLight);
-    let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 3, 5);
-    scene.add(directionalLight);
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 3, 5);
+    scene.add(light);
 
-    let starGeometry = new THREE.SphereGeometry(90, 64, 64);
-    let starMaterial = new THREE.MeshBasicMaterial({
-      map: new THREE.TextureLoader().load('https://threejsfundamentals.org/threejs/resources/images/starfield.jpg'),
-      side: THREE.BackSide
-    });
-    let starField = new THREE.Mesh(starGeometry, starMaterial);
+    const ambient = new THREE.AmbientLight(0x888888);
+    scene.add(ambient);
+
+    // Load starfield
+    const starGeometry = new THREE.SphereGeometry(90, 64, 64);
+    const starTexture = new THREE.TextureLoader().load('https://threejsfundamentals.org/threejs/resources/images/starfield.jpg');
+    const starMaterial = new THREE.MeshBasicMaterial({ map: starTexture, side: THREE.BackSide });
+    const starField = new THREE.Mesh(starGeometry, starMaterial);
     scene.add(starField);
 
-    let earthGeometry = new THREE.SphereGeometry(1, 64, 64);
-    let textureLoader = new THREE.TextureLoader();
-    textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/earth-day.jpg', function(texture) {
-      let earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
-      let earth = new THREE.Mesh(earthGeometry, earthMaterial);
-      scene.add(earth);
+    // Load Earth
+    const earthGeometry = new THREE.SphereGeometry(1, 64, 64);
+    const earthTexture = new THREE.TextureLoader().load('https://threejsfundamentals.org/threejs/resources/images/earth-day.jpg');
+    const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    scene.add(earth);
 
-      camera.position.z = 3;
+    camera.position.z = 3;
 
-      function animate() {
-        requestAnimationFrame(animate);
-        earth.rotation.y += 0.0015;
-        renderer.render(scene, camera);
-      }
-      animate();
-    });
+    function animate() {
+      requestAnimationFrame(animate);
+      earth.rotation.y += 0.0015;
+      renderer.render(scene, camera);
+    }
+    animate();
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -61,5 +60,3 @@
   </script>
 </body>
 </html>
-
-trigger pages build
